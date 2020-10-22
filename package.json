@@ -33,13 +33,17 @@
     "browserify": "^17.0.0",
     "browserify-shim": "^3.8.14",
     "clean-css": "^4.2.3",
+    "ffmpeg": "0.0.4",
+    "fluent-ffmpeg": "^2.1.2",
     "lint": "^0.7.0",
     "music-tempo": "^1.0.3",
     "serve": "^11.3.2",
+    "speaker": "^0.5.2",
     "standard": "^14.3.4",
     "uglify-js": "^3.11.3",
     "uglifyjs": "^2.4.11",
-    "web-audio-api": "^0.2.2"
+    "web-audio-api": "^0.2.2",
+    "youtube-audio-stream": "^0.3.6"
   },
   "devDependencies": {
     "clean-css-cli": "^4.3.0"
