@@ -9,8 +9,16 @@
 </head>
 <body>
 <input type="file" id="fileInput">
-<audio id="youtube" controls></audio>
-<input type="text" id="urlInput"/>
+<input type="text" id="urlInput1"/>
+<input type="text" id="urlInput2"/>
+<button onclick="start()">Click me</button> 
+<button onclick="testAudio()">testasfdasd</button> 
+<div id="player1"></div>
+<div id="player2"></div>
+ <audio controls>
+  <source id="audio1" src="http://ytdown.deniscerri.repl.co/download?URL=https://www.youtube.com/watch?v=aCdvYPGBvy0&File=mp3" type="audio/mpeg">
+  Your browser does not support the audio tag.
+</audio> 
 <script src="scripts.js"></script> 
 </body>
 </html>

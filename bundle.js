@@ -1,10 +1,16 @@
 (function(){function r(e,n,t){function o(i,f){if(!n[i]){if(!e[i]){var c="function"==typeof require&&require;if(!f&&c)return c(i,!0);if(u)return u(i,!0);var a=new Error("Cannot find module '"+i+"'");throw a.code="MODULE_NOT_FOUND",a}var p=n[i]={exports:{}};e[i][0].call(p.exports,function(r){var n=e[i][1][r];return o(n||r)},p,p.exports,r,e,n,t)}return n[i].exports}for(var u="function"==typeof require&&require,i=0;i<t.length;i++)o(t[i]);return o}return r})()({1:[function(require,module,exports){
-"use strict";
-var ytInput = document.getElementById("urlInput");
-var urlData = ytInput.value
-ytInput.addEventListener('change', setAudioSource)
+var ytInput1 = document.getElementById("urlInput1");
+var ytInput2 = document.getElementById("urlInput2");
+var urlData1 = ytInput1.value
+var urlData2 = ytInput2.value
+ytInput1.addEventListener('change', setAudioSource1)
+ytInput2.addEventListener('change', setAudioSource2)
+var ytReady1
+var ytReady2
 var youtubeAudioUrl
 var ytBuffer
+var buffer
+var soundSource
 
 // var youtubeStream = require('youtube-audio-stream')
 var context = new AudioContext({
@@ -24,11 +30,63 @@ fileInput.onchange = function () {
   reader.readAsArrayBuffer(files[0]);
 };
 
-function setName () {
-	urlData = ytInput.value
-	youtubeAudioUrl = getAudioURLFromYT(urlData)
-	ytBuffer = getBufferFromUrl(context, youtubeAudioUrl)
-	calcTempo(ytBuffer)
+function setAudioSource1 () {
+	console.log("FUCK YOU")
+	urlData1 = ytInput1.value
+	  var request = new XMLHttpRequest();
+	  request.open("GET", 'https://cors-anywhere.herokuapp.com/' + "http://ytdown.deniscerri.repl.co/download?URL=https://www.youtube.com/watch?v=" + urlData1 + "&File=mp3", true);
+	  request.responseType = "arraybuffer";
+
+	  /* Asynchronous callback */
+	  request.onload = function()
+	  {
+		 /* Create the sound source */
+		 soundSource = context.createBufferSource();
+			
+		 /* Import callback function that provides PCM audio data decoded as an audio buffer */
+		 var ytBPM1 = context.decodeAudioData(request.response, calcTempo);
+		 play();
+	  };
+	  request.send();
+}
+
+function setAudioSource1 () {
+	console.log("FUCK YOU")
+	urlData2 = ytInput2.value
+	  var request = new XMLHttpRequest();
+	  request.open("GET", 'https://cors-anywhere.herokuapp.com/' + "http://ytdown.deniscerri.repl.co/download?URL=https://www.youtube.com/watch?v=" + urlData2 + "&File=mp3", true);
+	  request.responseType = "arraybuffer";
+
+	  /* Asynchronous callback */
+	  request.onload = function()
+	  {
+		 /* Create the sound source */
+		 soundSource = context.createBufferSource();
+			
+		 /* Import callback function that provides PCM audio data decoded as an audio buffer */
+		 var ytBPM2 = context.decodeAudioData(request.response, calcTempo);
+		 play();
+	  };
+	  request.send();
+}
+
+function play () {
+	urlData1 = ytInput1.value
+	urlData2 = ytInput2.value
+	var snd1  = new Audio();
+	var src1  = document.createElement("source");
+	src1.type = "audio/mpeg";
+	src1.src  = 'https://cors-anywhere.herokuapp.com/' + "http://ytdown.deniscerri.repl.co/download?URL=https://www.youtube.com/watch?v=" + urlData1 + "&File=mp3";
+	snd1.appendChild(src1);
+
+	var snd2  = new Audio();
+	var src2  = document.createElement("source");
+	src2.type = "audio/mpeg";
+	src2.SetRate(ytBPM1 / ytBPM2);
+	src2.src  = 'https://cors-anywhere.herokuapp.com/' + "http://ytdown.deniscerri.repl.co/download?URL=https://www.youtube.com/watch?v=" + urlData2 + "&File=mp3";
+	snd2.appendChild(src2);
+
+	snd1.play(); snd2.play(); // Now both will play at the same time
 }
 
 var calcTempo = function calcTempo(buffer) {
@@ -49,71 +107,7 @@ var calcTempo = function calcTempo(buffer) {
   var mt = new MusicTempo(audioData);
   console.log(mt.tempo);
   console.log(mt.beats);
+  return(mt.tempo);
 };
 
-var getAudio = function getAudio(req, res) {
-  var requestUrl = 'http://youtube.com/watch?v=' + req.params.videoId;
-
-  try {
-    youtubeStream(requestUrl).pipe(res);
-  } catch (exception) {
-    res.status(500).send(exception);
-  }
-}; // YouTube video ID
-
-
-function getAudioURLFromYT(videoID) {
-	fetch('https://cors-anywhere.herokuapp.com/' + "https://www.youtube.com/get_video_info?video_id=" + videoID).then(function (response) {
-	  if (response.ok) {
-		response.text().then(function (ytData) {
-		  // parse response to find audio info
-		  var ytData = parse_str(ytData);
-		  var getAdaptiveFormats = JSON.parse(ytData.player_response).streamingData.adaptiveFormats;
-		  var findAudioInfo = getAdaptiveFormats.findIndex(function (obj) {
-			return obj.audioQuality;
-		  }); // get the URL for the audio file
-
-		  var audioURL = getAdaptiveFormats[findAudioInfo].url; // update the <audio> element src
-
-		  var youtubeAudio = document.getElementById('youtube');
-		  youtubeAudio.src = audioURL;
-		  console.log(audioURL);
-		  return audioURL;
-		});
-	  }
-	})
-}
-
-function parse_str(str) {
-  return str.split('&').reduce(function (params, param) {
-    var paramSplit = param.split('=').map(function (value) {
-      return decodeURIComponent(value.replace('+', ' '));
-    });
-    params[paramSplit[0]] = paramSplit[1];
-    return params;
-  }, {});
-}
-
-function getBufferFromUrl(context, url)
-{
-  var request = new XMLHttpRequest();
-  request.open("GET", url, true);
-  request.responseType = "arraybuffer";
-
-  /* Asynchronous callback */
-  request.onload = function()
-  {
-	 /* Create the sound source */
-	 soundSource = context.createBufferSource();
-		
-	 /* Import callback function that provides PCM audio data decoded as an audio buffer */
-	 context.decodeAudioData(request.response, function(buffer)
-	 {
-		bufferData = buffer;
-		soundSource.buffer = bufferData;
-	 }, this.onDecodeError);
-  };
-  request.send();
-  return buffer;
-}
 },{}]},{},[1]);

@@ -1,11 +1,28 @@
-"use strict";
-var ytInput = document.getElementById("urlInput");
-var urlData = ytInput.value
-ytInput.addEventListener('change', setAudioSource)
+var ytInput1 = document.getElementById("urlInput1");
+var ytInput2 = document.getElementById("urlInput2");
+
+function testAudio () {
+	console.log("button pushed idiot");
+	var myAudio = document.createElement('audio');
+	myAudio.setAttribute('src','http://ytdown.deniscerri.repl.co/download?URL=https://www.youtube.com/watch?v=aCdvYPGBvy0&File=mp3');
+	myAudio.playbackRate = 4;
+	myAudio.play();
+}
+
+var urlData1 = ytInput1.value
+var urlData2 = ytInput2.value
+//ytInput1.addEventListener('change', setAudioSource1)
+//ytInput2.addEventListener('change', setAudioSource2)
+var ytReady1
+var ytReady2
+var ytBPM1
+var ytBPM2
+
 var youtubeAudioUrl
 var ytBuffer
 var buffer
 var soundSource
+
 // var youtubeStream = require('youtube-audio-stream')
 var context = new AudioContext({
   sampleRate: 44100
@@ -24,11 +41,15 @@ fileInput.onchange = function () {
   reader.readAsArrayBuffer(files[0]);
 };
 
-function setAudioSource () {
-	urlData = ytInput.value
-	youtubeAudioUrl = getAudioURLFromYT(urlData)
+function start() {
+	setAudioSource1();
+	setAudioSource2();
+} 
+function setAudioSource1 () {
+	console.log("FUCK YOU")
+	urlData1 = ytInput1.value
 	  var request = new XMLHttpRequest();
-	  request.open("GET", youtubeAudioUrl, true);
+	  request.open("GET", "http://ytdown.deniscerri.repl.co/download?URL=https://www.youtube.com/watch?v=" + urlData1 + "&File=mp3", true);
 	  request.responseType = "arraybuffer";
 
 	  /* Asynchronous callback */
@@ -38,12 +59,55 @@ function setAudioSource () {
 		 soundSource = context.createBufferSource();
 			
 		 /* Import callback function that provides PCM audio data decoded as an audio buffer */
-		 context.decodeAudioData(request.response, calcTempo);
+		 context.decodeAudioData(request.response, calcTempo1);
+		 //console.log("ytBPM1 is " + ytBPM1);
+		 //ytReady1 = true;
+		 //play();
 	  };
 	  request.send();
 }
 
-var calcTempo = function calcTempo(buffer) {
+function setAudioSource2 () {
+	console.log("FUCK YOU")
+	urlData2 = ytInput2.value
+	  var request = new XMLHttpRequest();
+	  request.open("GET", "http://ytdown.deniscerri.repl.co/download?URL=https://www.youtube.com/watch?v=" + urlData2 + "&File=mp3", true);
+	  request.responseType = "arraybuffer";
+
+	  /* Asynchronous callback */
+	  request.onload = function()
+	  {
+		 /* Create the sound source */
+		 soundSource = context.createBufferSource();
+			
+		 /* Import callback function that provides PCM audio data decoded as an audio buffer */
+		 context.decodeAudioData(request.response, calcTempo2);
+		 //console.log("ytBPM2 is " + ytBPM2);
+		 //ytReady2 = true;
+		 //play();
+	  };
+	  request.send();
+}
+
+function play () {
+	if(ytReady1 === true && ytReady2 === true)
+	{
+		urlData1 = ytInput1.value
+		urlData2 = ytInput2.value
+		
+		var audio1 = document.createElement('audio');
+		audio1.setAttribute('src',"http://ytdown.deniscerri.repl.co/download?URL=https://www.youtube.com/watch?v=" + urlData1 + "&File=mp3");
+
+		var audio2 = document.createElement('audio');
+		audio2.setAttribute('src',"http://ytdown.deniscerri.repl.co/download?URL=https://www.youtube.com/watch?v=" + urlData2 + "&File=mp3");
+		audio2.playbackRate = (ytBPM1 / ytBPM2);
+		console.log("playback rate is " + (ytBPM1 / ytBPM2));
+		
+		audio1.play(); audio2.play(); // Now both will play at the same time
+	}
+}
+
+var calcTempo1 = function calcTempo(buffer) {
   var audioData = []; // Take the average of the two channels
 
   if (buffer.numberOfChannels == 2) {
@@ -59,49 +123,30 @@ var calcTempo = function calcTempo(buffer) {
   }
 
   var mt = new MusicTempo(audioData);
-  console.log(mt.tempo);
-  console.log(mt.beats);
+  ytBPM1 = parseFloat(mt.tempo);
+  console.log("ytBPM1 is " + ytBPM1);
+  ytReady1 = true;
+  play();
 };
 
-var getAudio = function getAudio(req, res) {
-  var requestUrl = 'http://youtube.com/watch?v=' + req.params.videoId;
+var calcTempo2 = function calcTempo(buffer) {
+  var audioData = []; // Take the average of the two channels
 
-  try {
-    youtubeStream(requestUrl).pipe(res);
-  } catch (exception) {
-    res.status(500).send(exception);
+  if (buffer.numberOfChannels == 2) {
+    var channel1Data = buffer.getChannelData(0);
+    var channel2Data = buffer.getChannelData(1);
+    var length = channel1Data.length;
+
+    for (var i = 0; i < length; i++) {
+      audioData[i] = (channel1Data[i] + channel2Data[i]) / 2;
+    }
+  } else {
+    audioData = buffer.getChannelData(0);
   }
-}; // YouTube video ID
 
-
-function getAudioURLFromYT(videoID) {
-	fetch('https://cors-anywhere.herokuapp.com/' + "https://www.youtube.com/get_video_info?video_id=" + videoID).then(function (response) {
-	  if (response.ok) {
-		response.text().then(function (ytData) {
-		  // parse response to find audio info
-		  var ytData = parse_str(ytData);
-		  var getAdaptiveFormats = JSON.parse(ytData.player_response).streamingData.adaptiveFormats;
-		  var findAudioInfo = getAdaptiveFormats.findIndex(function (obj) {
-			return obj.audioQuality;
-		  }); // get the URL for the audio file
-
-		  var audioURL = getAdaptiveFormats[findAudioInfo].url; // update the <audio> element src
-
-		  var youtubeAudio = document.getElementById('youtube');
-		  youtubeAudio.src = audioURL;
-		  console.log(audioURL);
-		  return audioURL;
-		});
-	  }
-	})
-}
-
-function parse_str(str) {
-  return str.split('&').reduce(function (params, param) {
-    var paramSplit = param.split('=').map(function (value) {
-      return decodeURIComponent(value.replace('+', ' '));
-    });
-    params[paramSplit[0]] = paramSplit[1];
-    return params;
-  }, {});
-}
+  var mt = new MusicTempo(audioData);
+  ytBPM2 = parseFloat(mt.tempo);
+  console.log("ytBPM2 is " + ytBPM2);
+  ytReady2 = true;
+  play();
+};
