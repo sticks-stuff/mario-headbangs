@@ -1,14 +1,14 @@
 {
-  "name": "lame.dj",
+  "name": "marioheadbangs",
   "version": "1.0.0",
-  "description": " Weird experimental mashup creator",
+  "description": "Make Mario headbang to your favourite track1",
   "main": "scripts.js",
   "watch": {
     "build:js": "*.js",
     "build:css": "*.css"
   },
   "scripts": {
-    "build:js": "browserify scripts.js -o bundle.js",
+    "build:js": "browserify scripts.js -o bundle.js && uglifyjs bundle.js --compress --mangle --output scripts.min.js",
     "build:css": "cleancss --output styles.min.css styles.css",
     "build": "npm run build:js && npm run build:css",
     "start": "serve ./",
@@ -18,7 +18,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/Thestickman391/lame.dj.git"
+    "url": "git+https://github.com/Thestickman391/mario-head-bangs.git"
   },
   "keywords": [
     "mario"
@@ -26,35 +26,24 @@
   "author": "Thestickman391",
   "license": "GPL-3.0-or-later",
   "bugs": {
-    "url": "https://github.com/Thestickman391/lame.dj/issues"
+    "url": "https://github.com/Thestickman391/mario-head-bangs/issues"
   },
-  "homepage": "https://github.com/Thestickman391/lame.dj#readme",
+  "homepage": "https://github.com/Thestickman391/mario-head-bangs#readme",
   "dependencies": {
-    "@ffmpeg-installer/ffmpeg": "^1.0.20",
-    "audio-decode": "^1.4.0",
-    "av": "^0.4.9",
     "browserify": "^17.0.0",
     "browserify-shim": "^3.8.14",
     "clean-css": "^4.2.3",
-    "experimental": "0.0.3",
     "ffmpeg": "0.0.4",
-    "ffmpeg-static": "^4.2.7",
     "fluent-ffmpeg": "^2.1.2",
     "lint": "^0.7.0",
     "music-tempo": "^1.0.3",
-    "ogg.js": "^0.1.0",
-    "opus.js": "^0.1.1",
     "serve": "^11.3.2",
     "speaker": "^0.5.2",
     "standard": "^14.3.4",
-    "stream-to-array": "^2.3.0",
     "uglify-js": "^3.11.3",
     "uglifyjs": "^2.4.11",
-    "wav-decoder": "^1.3.0",
     "web-audio-api": "^0.2.2",
-    "youtube-audio-stream": "^0.3.6",
-    "youtube-mp3-downloader": "^0.7.3",
-    "ytdl-core-discord": "^1.2.3"
+    "youtube-audio-stream": "^0.3.6"
   },
   "devDependencies": {
     "clean-css-cli": "^4.3.0"
