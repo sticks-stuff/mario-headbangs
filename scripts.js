@@ -60,8 +60,11 @@ function play () {
 	});
   
 	var mario = document.getElementById("mario"); 
-
-	mario.playbackRate = ytBPM / 230;
+	if(ytBPM >= 130) {
+		mario.playbackRate = ytBPM / 460;
+	} else {
+		mario.playbackRate = ytBPM / 230;
+	}
 	
 	function onPlayerReady(event) {
 		loaderContainer.style.display = "none";
