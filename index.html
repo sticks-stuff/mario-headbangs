@@ -7,18 +7,21 @@
 	
 	<title>Mario Head Bangs</title>
 </head>
-<body>
-<input type="file" id="fileInput">
-<input type="text" id="urlInput1"/>
-<input type="text" id="urlInput2"/>
-<button onclick="start()">Click me</button> 
-<button onclick="testAudio()">testasfdasd</button> 
-<div id="player1"></div>
-<div id="player2"></div>
- <audio controls>
-  <source id="audio1" src="http://ytdown.deniscerri.repl.co/download?URL=https://www.youtube.com/watch?v=aCdvYPGBvy0&File=mp3" type="audio/mpeg">
-  Your browser does not support the audio tag.
-</audio> 
-<script src="scripts.js"></script> 
-</body>
+	<body>
+		<div id="input">
+			<div id="inputContainer">
+				<input type="text" id="urlInput"/>
+				<button onclick="start()">Click me</button> 
+			</div>
+		</div>
+		<div id="loaderContainer" style="display: none;">
+			<div id="loader"></div> 
+		</div> 
+
+		<div class="canvasContainer">
+			<video loop muted playsinline id="mario" src="mario.webm" style="display: none;"></video>
+			<div id="player"></div>
+		</div>
+		<script src="scripts.js"></script> 
+	</body>
 </html>
