@@ -1,3 +1,6 @@
+@import url('https://fonts.googleapis.com/css2?family=Open+Sans&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;700&display=swap');
+
 #mario {
 	position:relative;
 	max-width: 100%;
@@ -89,6 +92,15 @@ button {
 @keyframes spin {
   0% { transform: rotate(0deg); }
   100% { transform: rotate(360deg); }
+}
+
+.infoText {
+	position: absolute;
+	bottom: 0;
+	padding: 1em;
+	height: auto;
+	font-size: 2em;
+	font-family: 'Open Sans', sans-serif;
 }
 
 * {
