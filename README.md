@@ -1,6 +1,6 @@
 # mario-headbangs
 Make Mario headbang to your favourite track!
 
-https://thestickman391.github.io/mario-headbangs/
+http://marioheadbangs.sticksweb.site/
 
 It might take a while to load, especially with longer videos
